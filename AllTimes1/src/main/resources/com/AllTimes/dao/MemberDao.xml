@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.AllTimes.dao.MemberDao">
+  
+ 	<select id="MemberLogin" resultType="com.AllTimes.dto.MemberDto">
+		SELECT * FROM MEMBER WHERE MID = #{mid} AND MPW = #{mpw}
+	</select>
+
+	<select id="ReporterLogin" resultType="com.AllTimes.dto.ReporterDto">
+		SELECT * FROM Reporter WHERE RID = #{rid} AND RPW = #{rpw}
+	</select>
+	
+	<select id="getMemberInfo" resultType="com.AllTimes.dto.MemberDto">
+		SELECT * FROM MEMBER WHERE MID = #{mid}
+	</select>
+	
+	<select id="selectMemberModifyForm" resultType="com.AllTimes.dto.MemberDto">
+		SELECT * FROM MEMBER 
+		WHERE MID = #{mid}
+	</select>
+  
+  	<update id = "updateMember">
+  		UPDATE MEMBER
+  		SET MPW = #{mpw}, MNAME = #{mname}, MMAIL = #{mmail}, MAGE = #{mage}, MCONTACT = #{mcontact}
+  		WHERE MID = #{mid}
+  	</update>
+  
+  </mapper>

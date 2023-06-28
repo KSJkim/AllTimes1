@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+    <mapper namespace="com.AllTimes.dao.ArticleDao">
+
+	<!-- 기사 정보 관련 Maaper -->
+	<select id="selectArticleCount" resultType="int">
+		SELECT COUNT(*)
+		FROM ARTICLE
+		WHERE AR_GENRE = #{ar_genre}
+	</select>
+
+	<select id="selectArticleList"
+		resultType="com.AllTimes.dto.ArticleDto">
+		SELECT *
+		FROM ARTICLE
+		WHERE AR_GENRE = #{ar_genre}
+		ORDER BY
+		AR_DATE nulls last
+	</select>
+
+	<update id="updateArticleHits">
+		UPDATE ARTICLE
+		SET AR_HITS = AR_HITS + 1
+		WHERE AR_NO =
+		#{ar_no}
+	</update>
+
+	<select id="selectArticleHits" resultType="int">
+		SELECT AR_HITS
+		FROM
+		ARTICLE
+		WHERE AR_NO = #{ar_no}
+	</select>
+
+	<select id="selectArticleRead"
+		resultType="com.AllTimes.dto.ArticleDto">
+		SELECT *
+		FROM ARTICLE
+		WHERE AR_NO = #{ar_no}
+	</select>
+	<!-- 사용되지 않음 <update id="updateCommentsNumber"> UPDATE ARTICLE SET AR_NO 
+		= #{ar_no} WHERE CM_NO = ( SELECT MAX(CM_NO) FROM ARTICLE ) </update> 사용되지 
+		않음 -->
+	<select id="selectCommentsNumber" resultType="int">
+		SELECT MAX(CM_NO)
+		+1
+		FROM ARTICLE
+	</select>
+
+	<insert id="insertCommentsWrite">
+		INSERT INTO COMMENTS
+		(CM_NO, CM_WRITER, CM_DETAIL,
+		CM_AR_NO, CM_DATE)
+		VALUES
+		(#{cm_no}, #{cm_writer}, #{cm_detail},
+		#{ar_no}, SYSDATE);
+	</insert>
+
+	<select id="selectCommentsCount" resultType="int">
+		SELECT COUNT(*)
+		FROM
+		COMMENTS
+		WHERE CM_AR_NO = #{ar_no}
+	</select>
+
+	<select id="selectCommentsList"
+		resultType="com.AllTimes.dto.ArticleDto">
+		SELECT *
+		FROM COMMENTS
+		WHERE CM_AR_NO = #{ar_no}
+	</select>
+	<!-- 기사 정보 관련 끝 -->
+
+	<!-- 메인페이지 기사 관련 Mapper -->
+	<!-- 기사 제목 검색 xml -->
+	<select id="selectSearchArticle"
+		resultType="com.AllTimes.dto.ArticleDto">
+		SELECT AR_NO, AR_TITLE, AR_DETAIL, AR_NAME,
+		TO_CHAR(AR_DATE, 'YYYY-MM-DD') AS AR_DATE, AR_GENRE, AR_IMG
+		FROM ARTICLE
+		WHERE AR_TITLE LIKE '%'||#{searchArticle}||'%'
+	</select>
+
+
+	<!-- 기사 전체 목록 xml -->
+	<!-- 이름변경 selectArticleList =>> selectAllArticleList -->
+	<select id="selectAllArticleList"
+		resultType="com.AllTimes.dto.ArticleDto">
+		SELECT * FROM ARTICLE 
+    		<![CDATA[WHERE ROWNUM <=4]]>
+	</select>
+
+
+	<!-- 기사 정보 페이지 xml -->
+	<select id="selectArticleInfo"
+		resultType="com.AllTimes.dto.ArticleDto">
+		SELECT * FROM ARTICLE
+		WHERE AR_NO = #{ar_no}
+	</select>
+
+	<!-- 조회수높은 상위 5개기사 xml -->
+	<!-- 이름 변경: selectArticleHits =>> selectMainArticleHits -->
+	<select id="selectMainArticleHits"
+		resultType="com.AllTimes.dto.ArticleDto">
+		SELECT AR_NO, AR_TITLE, AR_DETAIL, AR_NAME,
+		TO_CHAR(AR_DATE, 'YYYY-MM-DD')AS AR_DATE , AR_GENRE,
+		AR_IMG, AR_HITS, AR_THUMBSUP, AR_THUMBSDOWN FROM
+		(SELECT * FROM ARTICLE ORDER BY AR_HITS DESC, AR_DATE DESC)
+    		<![CDATA[WHERE ROWNUM <=5]]>
+	</select>
+
+
+
+	<!-- 코로나기사 조회수 상위 1개 -->
+	<select id="selectArticleCovid"
+		resultType="com.AllTimes.dto.ArticleDto">
+		SELECT *
+		FROM (SELECT * FROM ARTICLE WHERE AR_GENRE = 'COVID-19'
+		ORDER BY AR_HITS DESC, AR_DATE DESC)
+		WHERE ROWNUM = 1
+	</select>
+
+	<!-- 정치기사 조회수 상위 1개 -->
+	<select id="selectArticlePolitics"
+		resultType="com.AllTimes.dto.ArticleDto">
+		SELECT *
+		FROM (SELECT * FROM ARTICLE WHERE AR_GENRE = 'POLITICS'
+		ORDER BY AR_HITS DESC, AR_DATE DESC)
+		WHERE ROWNUM = 1
+	</select>
+
+	<!-- 사회기사 조회수 상위 1개 -->
+	<select id="selectArticleSociety"
+		resultType="com.AllTimes.dto.ArticleDto">
+		SELECT *
+		FROM (SELECT * FROM ARTICLE WHERE AR_GENRE = 'SOCIETY'
+		ORDER BY AR_HITS DESC, AR_DATE DESC)
+		WHERE ROWNUM = 1
+	</select>
+
+	<!-- 문화기사 조회수 상위 1개 -->
+	<select id="selectArticleCulture"
+		resultType="com.AllTimes.dto.ArticleDto">
+		SELECT *
+		FROM (SELECT * FROM ARTICLE WHERE AR_GENRE = 'CULTURE'
+		ORDER BY AR_HITS DESC, AR_DATE DESC)
+		WHERE ROWNUM = 1
+	</select>
+
+	<!-- 경제기사 조회수 상위 1개 -->
+	<select id="selectArticleEconomy"
+		resultType="com.AllTimes.dto.ArticleDto">
+		SELECT *
+		FROM (SELECT * FROM ARTICLE WHERE AR_GENRE = 'ECONOMY'
+		ORDER BY AR_HITS DESC, AR_DATE DESC)
+		WHERE ROWNUM = 1
+	</select>
+
+	<!-- 스포츠기사 조회수 상위 1개 -->
+	<select id="selectArticleSports"
+		resultType="com.AllTimes.dto.ArticleDto">
+		SELECT *
+		FROM (SELECT * FROM ARTICLE WHERE AR_GENRE = 'SPORTS'
+		ORDER BY AR_HITS DESC, AR_DATE DESC)
+		WHERE ROWNUM = 1
+	</select>
+
+	<!-- 국제기사 조회수 상위 1개 -->
+	<select id="selectArticleInternational"
+		resultType="com.AllTimes.dto.ArticleDto">
+		SELECT *
+		FROM (SELECT * FROM ARTICLE WHERE AR_GENRE = 'INTERNATIONAL'
+		ORDER BY AR_HITS DESC, AR_DATE DESC)
+		WHERE ROWNUM = 1
+	</select>
+
+	<!-- 가장 최신 기사 3개 -->
+	<select id="selectArticleLatest"
+		resultType="com.AllTimes.dto.ArticleDto">
+		SELECT *
+		FROM ( SELECT * FROM ARTICLE
+		ORDER BY AR_DATE DESC)
+			<![CDATA[WHERE ROWNUM <=3]]>
+	</select>
+
+	<!-- 최신 기사 조회수 상위 3개 -->
+	<select id="selectArticleLatestHits"
+		resultType="com.AllTimes.dto.ArticleDto">
+		SELECT *
+		FROM ( SELECT * FROM ARTICLE
+		ORDER BY AR_HITS DESC, AR_DATE DESC)
+			<![CDATA[WHERE ROWNUM <=3]]>
+	</select>
+
+	<!-- 최신 기사 추천수 상위 3개 -->
+	<select id="selectArticleLatestThumbsup"
+		resultType="com.AllTimes.dto.ArticleDto">
+		SELECT *
+		FROM ( SELECT * FROM ARTICLE
+		ORDER BY AR_THUMBSUP DESC, AR_DATE DESC)
+			<![CDATA[WHERE ROWNUM <=3]]>
+	</select>
+
+	<!-- (FOOTER) LASTEST NEWS -->
+	<select id="selectArticleLatestFooter"
+		resultType="com.AllTimes.dto.ArticleDto">
+		SELECT AR_NO, AR_TITLE, AR_DETAIL, AR_NAME,
+		TO_CHAR(AR_DATE, 'YYYY-MM-DD')AS AR_DATE , AR_GENRE,
+		AR_IMG, AR_HITS, AR_THUMBSUP, AR_THUMBSDOWN
+		FROM ( SELECT * FROM ARTICLE
+		ORDER BY AR_DATE DESC)
+			<![CDATA[WHERE ROWNUM <=5]]>
+
+
+	</select>
+	<!-- 기사 수정 페이지 -->
+	<select id="selectArticleModify" resultType="com.AllTimes.dto.ArticleDto">
+		SELECT AR_NO,AR_GENRE,AR_TITLE,AR_DETAIL,AR_IMG
+		FROM ARTICLE 
+		WHERE AR_NO=#{ar_no}
+	</select>
+	<select id="Articleselect" resultType="com.AllTimes.dto.ArticleDto">
+		SELECT AR_IMG
+		FROM ARTICLE 
+		WHERE AR_NO=#{ar_no}
+	</select>
+
+	<update id="ArticleModifyRequest">
+		UPDATE ARTICLE
+		SET AR_NO=#{ar_no}, AR_TITLE=#{ar_title}, AR_DETAIL=#{ar_detail},AR_GENRE=#{ar_genre}, AR_IMG=#{ar_img}
+		WHERE AR_NO=#{ar_no}
+	</update>
+	
+	
+	<update id="ReporterModify">
+		UPDATE REPORTER
+		SET RPW=#{rpw}, RNAME=#{rname}, RCONTACT=#{rcontact}, RMAIL=#{rmail}, RPROFILE=#{rprofile}
+		WHERE RID=#{rid}
+	</update>
+	<!-- 신문기자 -->
+	<select id="ReporterArticle"	resultType="com.AllTimes.dto.ArticleDto">
+		SELECT AR_NO, AR_TITLE, AR_DETAIL, AR_NAME, AR_COMMENT, AR_DATE, AR_GENRE, AR_HITS, AR_IMG,  AR_THUMBSUP,  AR_THUMBSDOWN
+		FROM ARTICLE 
+		WHERE AR_NAME =#{rid}
+	</select>
+		
+
+
+	<select id="ReporterModifyForm"	resultType="com.AllTimes.dto.ReporterDto">
+		SELECT RID, RNAME, RSTATE, RMAIL, RPROFILE, RCONTACT FROM
+		REPORTER WHERE RID = #{rid}
+	</select>
+	<!-- 메인페이지 기사 관련 끝 -->
+	<!-- -->
+	<select id="getArticleMaxNo" resultType="int">
+		SELECT NVL(MAX(AR_NO),0)
+		FROM ARTICLE
+	</select>
+	
+	<insert id="insertArticle">
+		INSERT INTO ARTICLE(AR_NO, AR_TITLE, AR_DETAIL, AR_NAME, AR_DATE, AR_GENRE,
+		AR_HITS, AR_THUMBSUP, AR_THUMBSDOWN, AR_IMG)
+		VALUES( #{ar_no}, #{ar_title}, #{ar_detail}, #{ar_name}, sysdate,
+		#{ar_genre},0,0,0,#{ar_img})
+	</insert>
+
+	<delete id="ArticleDelete">
+		DELETE FROM ARTICLE
+		WHERE AR_NO =#{ar_no}	
+	</delete>
+ </mapper>
