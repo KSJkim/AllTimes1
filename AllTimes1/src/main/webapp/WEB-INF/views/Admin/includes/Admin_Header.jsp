@@ -81,9 +81,9 @@
     <div class="collapse navbar-toggleable-md" id="exCollapsingNavbar2"> <a class="navbar-brand" href="#">Responsive navbar</a>
         <ul class="nav navbar-nav ">
        	<li class="nav-item active" id="adminHome"> <a class="nav-link" href="Admin_Home">홈페이지 </a> </li>
-        <li class="nav-item" id="memManegement"> <a class="nav-link" href="Admin_MemberManagement">회원계정 관리<span class="sr-only">(current)</span></a> </li>
-      	<li class="nav-item" id="repManegement"> <a class="nav-link" href="Admin_ReporterManagement">기자계정 관리</a> </li>
-      	<li class="nav-item" id="artiManegement"> <a class="nav-link" href="Admin_ArticleManagement?ar_genre=all">기사 관리</a> </li>
+        <li class="nav-item" id="memManagement"> <a class="nav-link" href="Admin_MemberManagement">회원계정 관리<span class="sr-only">(current)</span></a> </li>
+      	<li class="nav-item" id="repManagement"> <a class="nav-link" href="Admin_ReporterManagement">기자계정 관리</a> </li>
+      	<li class="nav-item" id="artiManagement"> <a class="nav-link" href="Admin_ArticleManagement?ar_genre=all">기사 관리</a> </li>
       </ul>
      </div>
   </div>
@@ -93,15 +93,15 @@
 	var session = "<%=(String)session.getAttribute("activeEle")%>";
 
 	document.addEventListener("DOMContentLoaded",function(){
-		if(session == "memManegement"){
+		if(session == "memManagement"){
 			$(".nav-item").removeClass("active");
-			$("#memManegement").addClass("active");
+			$("#memManagement").addClass("active");
 		}else if(session == "repManagement"){
 			$(".nav-item").removeClass("active");
-			$("#repManegement").addClass("active");
+			$("#repManagement").addClass("active");
 		}else if(session == "artiManagement"){
 			$(".nav-item").removeClass("active");
-			$("#artiManegement").addClass("active");
+			$("#artiManagement").addClass("active");
 		}else if(session == "adminHome"){
 			$(".nav-item").removeClass("active");
 			$("#adminHome").addClass("active");

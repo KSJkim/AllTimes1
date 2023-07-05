@@ -57,7 +57,7 @@ public interface AdminDao {
 
 	ArrayList<MemberDto> mSearchName(@Param("keyword") String keyword, @Param("cri") Criteria cri);
 
-	ArrayList<ReporterDto> reporterListPaging(Criteria cri);
+	ArrayList<ReporterDto> reporterList(Criteria cri);
 	
 	int getTotalAccountR();
 

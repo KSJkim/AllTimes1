@@ -2,7 +2,7 @@ package com.AllTimes.service;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.AllTimes.controller.AdminController;
 import com.AllTimes.dao.AdminDao;
 import com.AllTimes.dto.ArticleDto;
 import com.AllTimes.dto.CommentsDto;
@@ -37,15 +38,16 @@ public class AdminService {
 	private AdminDao AdminDao;
 
 	@Autowired
+	private AdminController AdminController;
+	
+	//File file = new File("");
+	@Autowired
 	private HttpServletRequest request;
 	
-	private URL P = this.getClass().getResource("/");
-
-	private String path = P.getPath();
 	private String savePath
-	= "C:\\Users\\김성재\\eclipse-workspace\\2021\\AllTimes\\src\\main\\webapp\\resources\\upLoadedFile\\ReporterProfile";
+	= "기자 프로필 파일 저장경로";
 	private String articleSavePath
-	= "C:\\Users\\김성재\\eclipse-workspace\\2021\\AllTimes\\src\\main\\webapp\\resources\\upLoadedFile\\ArticleFile";
+	= "기사에 삽입될 사진 저장 경로";
 	public ModelAndView Admin_Home() {
 		System.out.println("AdminService.Admin_Home()");
 		mav = new ModelAndView();
@@ -64,8 +66,8 @@ public class AdminService {
 	
 	/*---------회원 계정 관리 페이지 이동--------*/
 	public ModelAndView Admin_MemberManagement(Criteria cri) {
-		//String path = request.getSession().getServletContext().getRealPath("");
 		
+
 		System.out.println("AdminService.Admin_MemberManagement()");
 		mav = new ModelAndView();
 		int totalAccount = AdminDao.getTotalAccountM();
@@ -76,8 +78,8 @@ public class AdminService {
 		
 		mav.addObject("paging", paging);
 		mav.addObject("MemberList", MemberList);
-		mav.setViewName("Admin/Admin_MemberManegementPage");
-		session.setAttribute("activeEle", "memManegement");
+		mav.setViewName("Admin/Admin_MemberManagementPage");
+		session.setAttribute("activeEle", "memManagement");
 		
 		
 		return mav;
@@ -143,7 +145,7 @@ public class AdminService {
 
 		int totalAccount = AdminDao.getTotalAccountR();
 		PagingDto paging = new PagingDto(cri, totalAccount);
-		ArrayList<ReporterDto> ReporterList = AdminDao.reporterListPaging(cri);
+		ArrayList<ReporterDto> ReporterList = AdminDao.reporterList(cri);
 		
 		mav.addObject("ReporterList", ReporterList);
 
@@ -325,15 +327,16 @@ public class AdminService {
 		return telCheckResult;
 		
 	}
+
 	/*---------기자 계정 목록 검색--------*/
 	public ModelAndView reporterSearch(String keyword, String searchType, Criteria cri) {
 		System.out.println("AdminService.reporterSearch()");
 		List<ReporterDto> searchResultList = new ArrayList<ReporterDto>();
 		int searchAccount = AdminDao.getSearchAccountR(keyword);
 		PagingDto paging = new PagingDto(cri, searchAccount);
-		System.out.println(searchAccount);
+		System.out.println("계졍수: "+searchAccount);
 		if(keyword=="") {
-			mav.setViewName("Admin/Admin_ReporterManagementPage");
+			AdminController.Admin_ReporterManagement(cri);
 		} else {
 			System.out.println(searchType);
 			if(searchType.equals("tId")){
@@ -346,6 +349,7 @@ public class AdminService {
 				System.out.println("전체검색");
 				searchResultList = AdminDao.rSearchAll(keyword, cri);
 			}
+			mav.addObject("keyword", keyword);
 			mav.addObject("paging", paging);
 			mav.addObject("searchResult", searchResultList);
 			mav.setViewName("Admin/Admin_ReporterSearchResult");
@@ -363,7 +367,7 @@ public class AdminService {
 		PagingDto paging = new PagingDto(cri, searchAccount);
 		
 		if(keyword=="") {
-			mav.setViewName("Admin/Admin_ReporterManagementPage");
+			mav.setViewName("Admin/Admin_MemberManagementPage");
 		} else {
 			System.out.println(searchType);
 			if(searchType.equals("tId")){
@@ -469,7 +473,7 @@ public class AdminService {
 			}
 			mav.addObject("paging", paging);
 			mav.addObject("searchResult", searchResultList);
-			mav.setViewName("redirect:/Admin_ArticleSearchResult");
+			mav.setViewName("Admin/Admin_ArticleSearchResult");
 		}
 		
 
@@ -483,7 +487,6 @@ public class AdminService {
 		
 		ArticleDto ArticleInfo = AdminDao.selectArticleInfo(ar_no);
 		mav.addObject("ArticleInfo",ArticleInfo);
-		
 		mav.setViewName("Admin/Admin_ArticleModifyPage");
 		
 		return mav;
@@ -494,7 +497,7 @@ public class AdminService {
 		String ar_filename = "";
 		int dtoAr_no = article.getAr_no();
 		mav = new ModelAndView();
-		
+		System.out.println(articleSavePath);
 		String oldFileName = AdminDao.Ar_oldFileSelect(dtoAr_no);
 		File oldFile = new File(articleSavePath + "\\" + oldFileName);
 		

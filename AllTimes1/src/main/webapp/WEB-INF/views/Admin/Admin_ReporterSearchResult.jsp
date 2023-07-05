@@ -82,6 +82,11 @@
 
 			</tbody>
 		</table>
+
+	<form id="pageMoveForm" method="get">
+		<input type="hidden" name="pageNo" value="${paging.cri.pageNo }">
+		<input type="hidden" name="amount" value="${paging.cri.amount }">
+	</form>
 	<form action="reporterSearch" method="get" class="form-group" style="border: 0px; float: right;">
 		<div class='input-group'>
 			<select name ="searchType">
@@ -95,7 +100,27 @@
 	</form>
 	</div>
 
+
 </section>
+<script type="text/javascript">
+		var msg = '${ModifyMsg}';
+		if(msg != ''){
+			alert(msg);
+		}
+	</script>
+	<script type="text/javascript">
+		var msg = '${deleteMsg}';
+		if(msg != ''){
+			alert(msg);
+		}
+	</script>
+	<script type="text/javascript">
+	var msg = '${rJoinMsg}';
+	if(msg != ''){
+		alert(Rmsg);
+	}
+	</script>
+
 	<script src="${pageContext.request.contextPath }/resources/js/jquery.min.js"></script>
 	<script src="${pageContext.request.contextPath }/resources/js/bootstrap.min.js"></script> 
 	<script src="${pageContext.request.contextPath }/resources/js/core.js"></script>

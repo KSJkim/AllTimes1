@@ -84,12 +84,15 @@
 	<![CDATA[
 		SELECT RID, RNAME, RSTATE, RMAIL
 		FROM (
-		SELECT /*+INDEX(REPORTER PK_RID) */ ROW_NUMBER() OVER (ORDER BY RID) RN, RID, RPW, RNAME, RSTATE, RMAIL, RPROFILE, RCONTACT 
-		FROM REPORTER WHERE ROWNUM <= #{cri.pageNo}*#{cri.amount} ORDER BY NLSSORT(RID,'NLS_SORT=generic_m_ci' ))
+		 SELECT /*+INDEX(REPORTER PK_RID) */ ROW_NUMBER() OVER (ORDER BY RID) RN, RID, RPW, RNAME, RSTATE, RMAIL, RPROFILE, RCONTACT 
+		 FROM REPORTER
+		 WHERE UPPER(RID) LIKE UPPER('%'||#{keyword}||'%') OR
+		 	   UPPER(RNAME) LIKE UPPER('%'||#{keyword}||'%') 
+		 ORDER BY NLSSORT(RID,'NLS_SORT=generic_m_ci' )
+		 )
 		WHERE
 		RN > (#{cri.pageNo}-1)* #{cri.amount} AND
-		(UPPER(RID) LIKE UPPER('%'||#{keyword}||'%') OR 
-		UPPER(RNAME) LIKE UPPER('%'||#{keyword}||'%'))
+		RN <= #{cri.pageNo}*#{cri.amount}
 		]]>
 	</select>
 	
@@ -97,11 +100,14 @@
 	<![CDATA[
 		SELECT RID, RNAME, RSTATE, RMAIL
 		FROM (
-		SELECT /*+INDEX(REPORTER PK_RID) */ ROW_NUMBER() OVER (ORDER BY RID) RN, RID, RPW, RNAME, RSTATE, RMAIL, RPROFILE, RCONTACT 
-		FROM REPORTER WHERE ROWNUM <= #{cri.pageNo}*#{cri.amount} ORDER BY NLSSORT(RID,'NLS_SORT=generic_m_ci' ))
+		 SELECT /*+INDEX(REPORTER PK_RID) */ ROW_NUMBER() OVER (ORDER BY RID) RN, RID, RPW, RNAME, RSTATE, RMAIL, RPROFILE, RCONTACT 
+		 FROM REPORTER
+		 WHERE UPPER(RNAME) LIKE UPPER('%'||#{keyword}||'%')
+		 ORDER BY NLSSORT(RNAME,'NLS_SORT=generic_m_ci' )
+		 )
 		WHERE
 		RN > (#{cri.pageNo}-1)* #{cri.amount} AND
-		(UPPER(RNAME) LIKE UPPER('%'||#{keyword}||'%'))
+		RN <= #{cri.pageNo}*#{cri.amount}
 		]]>
 	</select>
 	
@@ -109,11 +115,13 @@
 	<![CDATA[
 		SELECT RID, RNAME, RSTATE, RMAIL
 		FROM (
-		SELECT /*+INDEX(REPORTER PK_RID) */ ROW_NUMBER() OVER (ORDER BY RID) RN, RID, RPW, RNAME, RSTATE, RMAIL, RPROFILE, RCONTACT 
-		FROM REPORTER WHERE ROWNUM <= #{cri.pageNo}*#{cri.amount} ORDER BY NLSSORT(RID,'NLS_SORT=generic_m_ci' ))
+		 SELECT /*+INDEX(REPORTER PK_RID) */ ROW_NUMBER() OVER (ORDER BY RID) RN, RID, RPW, RNAME, RSTATE, RMAIL, RPROFILE, RCONTACT 
+		 FROM REPORTER
+		 WHERE UPPER(RID) LIKE UPPER('%'||#{keyword}||'%')
+		 ORDER BY NLSSORT(RID,'NLS_SORT=generic_m_ci' ))
 		WHERE
-		RN > (#{cri.pageNo}-1)* #{cri.amount} AND
-		(UPPER(RID) LIKE UPPER('%'||#{keyword}||'%'))
+		 RN > (#{cri.pageNo}-1)* #{cri.amount} AND
+		 RN <= #{cri.pageNo}*#{cri.amount}
 		]]>
 	</select>
 	
@@ -152,7 +160,7 @@
 	</select>
 	
 	
-	<select id="reporterListPaging" resultType="com.AllTimes.dto.ReporterDto"><!-- CDTA를 사용해서 부등호 사용 -->
+	<select id="reporterList" resultType="com.AllTimes.dto.ReporterDto"><!-- CDTA를 사용해서 부등호 사용 -->
 	<![CDATA[
 		SELECT RID, RNAME, RSTATE, RMAIL
 		FROM (
@@ -215,25 +223,31 @@
 	</delete>
 	
 	<select id="aSearchName" resultType="com.AllTimes.dto.ArticleDto">
+	<![CDATA[
 		SELECT AR_NO, AR_TITLE, AR_NAME, TO_CHAR(AR_DATE, 'YYYY-MM-DD HH24:MI') AS AR_DATE, AR_GENRE
 		FROM ARTICLE
 		WHERE UPPER(AR_NAME) LIKE UPPER('%'||#{keyword}||'%')
 		ORDER BY AR_NO DESC
+		]]>
 	</select>
 	
 	<select id="aSearchTitle" resultType="com.AllTimes.dto.ArticleDto">
+	<![CDATA[
 		SELECT AR_NO, AR_TITLE, AR_NAME, TO_CHAR(AR_DATE, 'YYYY-MM-DD HH24:MI') AS AR_DATE, AR_GENRE
 		FROM ARTICLE
 		WHERE UPPER(AR_TITLE) LIKE UPPER('%'||#{keyword}||'%')
 		ORDER BY AR_NO DESC
+		]]>
 	</select>
 	
 	<select id="aSearchAll" resultType="com.AllTimes.dto.ArticleDto">
+	<![CDATA[
 		SELECT AR_NO, AR_TITLE, AR_NAME, TO_CHAR(AR_DATE, 'YYYY-MM-DD HH24:MI') AS AR_DATE, AR_GENRE
 		FROM ARTICLE
-		WHERE UPPER(AR_NAME) LIKE UPPER('%'||#{keyword}||'%') AND
+		WHERE UPPER(AR_NAME) LIKE UPPER('%'||#{keyword}||'%') OR
 		UPPER(AR_TITLE) LIKE UPPER('%'||#{keyword}||'%')
 		ORDER BY AR_NO DESC
+		]]>
 	</select>
 	
 	<select id="selectComment" resultType="com.AllTimes.dto.CommentsDto">

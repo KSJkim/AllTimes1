@@ -186,6 +186,15 @@ public class AdminController {
 		
 		return mav;
 	}
+	
+	@RequestMapping(value = "/articleSearch")
+	public @ResponseBody ModelAndView articleSearch(String keyword, String searchType, Criteria cri) {
+		System.out.println("검색어: "+keyword+" 검색 종류: "+ searchType);
+		
+		mav = AdminSvc.articleSearch(keyword, searchType, cri);
+		
+		return mav;
+	}
 	/*---------검색기능 끝--------*/
 	
 	/*----------기사 관리 페이지 이동----------*/
@@ -218,14 +227,7 @@ public class AdminController {
 		return mav;
 		
 	}
-	@RequestMapping(value = "/articleSearch")
-	public @ResponseBody ModelAndView articleSearch(String keyword, String searchType, Criteria cri) {
-		System.out.println("검색어: "+keyword+" 검색 종류: "+ searchType);
-		
-		mav = AdminSvc.articleSearch(keyword, searchType, cri);
-		
-		return mav;
-	}
+
 	@RequestMapping(value = "/Admin_articleModifyPage")
 	public ModelAndView Admin_articleModifyPage(int ar_no){
 		System.out.println("/Admin_articleModifyPage 기사 수정 페이지 이동");
