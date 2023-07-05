@@ -45,9 +45,9 @@ public class AdminService {
 	private HttpServletRequest request;
 	
 	private String savePath
-	= "C:\\Users\\vkfks\\eclipse-workspace\\2021\\AllTimes\\src\\main\\webapp\\resources\\upLoadedFile\\ReporterProfile";
+	= "기자 프로필 파일 저장경로";
 	private String articleSavePath
-	= "C:\\Users\\vkfks\\eclipse-workspace\\2021\\AllTimes\\src\\main\\webapp\\resources\\upLoadedFile\\ArticleFile";
+	= "기사에 삽입 될 사진 저장 경로";
 	public ModelAndView Admin_Home() {
 		System.out.println("AdminService.Admin_Home()");
 		mav = new ModelAndView();
